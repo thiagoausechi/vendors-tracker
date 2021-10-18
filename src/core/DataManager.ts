@@ -6,9 +6,9 @@ export default class DataManager
 {
     #vendors: Vendor[] = [];
 
-    constructor()
+    constructor(locale: string)
     {
-        console.log("Starting DataManager");
+        console.log(`Starting DataManager ${locale}`);
 
         VendorsList.map((v) => { this.#vendors.push(new Vendor(v.hash).setColor(v.color)) });
 
