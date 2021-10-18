@@ -5,6 +5,11 @@ import fr from "../lang/locales/fr";
 import it from "../lang/locales/it";
 import pt from "../lang/locales/pt-br";
 
+export default class Language
+{
+    public static readonly ACCEPTABLE_LOCALES = ['de', 'en', 'es', 'fr', 'it', 'pt-br'];
+}
+
 /**
  * const t = useTranslation('en');
  *
@@ -14,7 +19,7 @@ import pt from "../lang/locales/pt-br";
  * Using translation from key
  * t['key']
  */
-export default function useTranslation(locale: string)
+export function useTranslation(locale: string)
 {
     switch (locale)
     {

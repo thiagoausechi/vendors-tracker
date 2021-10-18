@@ -24,8 +24,8 @@ export default async function handler(req, res)
         const at = response.access_token;
         const rt = response.refresh_token;
 
-        console.log(at);
-        console.log(rt);
+        console.log("Access Token: " + at);
+        console.log("Refresh Token: " + rt);
 
         await setDoc(doc(db, "tokens", "0"), { access_token: at, refresh_token: rt });
 

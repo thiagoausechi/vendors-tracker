@@ -51,7 +51,6 @@ export default class Vendor extends JSONSerializable
     static fromSerialized(serialized: string): Vendor
     {
         const v = JSON.parse(serialized);
-        console.log(v);
         return new Vendor(v.hash).setColor(v.color);
     }
 }
