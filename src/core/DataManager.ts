@@ -21,9 +21,9 @@ export default class DataManager
     {
         const fakeHttp = async (config) => console.log(config.url);
 
-        console.log(manifestMetadata.version);
+        //console.log(manifestMetadata.version);
         console.log(CachedManifest.version);
-        console.log(manifestMetadata.version === CachedManifest.version);
+        //console.log(manifestMetadata.version === CachedManifest.version);
     }
 
     getVendors(): Vendor[]
