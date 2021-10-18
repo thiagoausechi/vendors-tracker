@@ -1,14 +1,13 @@
 import DestinyItem from "./DestinyItem";
 import Guardian from "./Guardian";
 import ArmorStatus from "./ArmorStatus";
-import { DestinyItemSubType } from 'bungie-api-ts/destiny2';
 
 export default class DestinyItemArmor extends DestinyItem
 {
     #status = new Map<ArmorStatus, number>();
     #classType: Guardian;
 
-    constructor(hash: string, type: DestinyItemSubType, classType: Guardian)
+    constructor(hash: string, type: number, classType: Guardian)
     {
         super(hash, type);
         this.#classType = classType;
