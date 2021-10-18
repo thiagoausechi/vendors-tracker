@@ -3,7 +3,6 @@ import db from "../../../core/Backend/Config";
 
 export default async function handler(req, res)
 {
-    /*
     const request = await fetch("https://www.bungie.net/Platform/App/OAuth/Token/",
         {
             method: "POST",
@@ -24,7 +23,7 @@ export default async function handler(req, res)
     console.log(at);
     console.log(rt);
 
-    //await setDoc(doc(db, "tokens", "0"), { access_token: at, refresh_token: rt });
+    await setDoc(doc(db, "tokens", "0"), { access_token: at, refresh_token: rt });
 
-    res.status(200).json(response);*/
+    res.status(200).json(response);
 }
