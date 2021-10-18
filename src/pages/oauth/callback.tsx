@@ -22,7 +22,7 @@ export default function handler(req, res)
 
     xhr.send("grant_type=authorization_code&code=" + req.query.code);
 
-    return <div>{res}</div>;
+    return null;
 }
 
 // https://www.bungie.net/en/oauth/authorize?client_id=37599&response_type=code
