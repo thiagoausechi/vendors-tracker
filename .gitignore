@@ -35,3 +35,4 @@ yarn-error.log*
 
 # specific files 
 src/core/Cached/OAuthTokens.json
+src/core/Backend/Database/firebase-key.json

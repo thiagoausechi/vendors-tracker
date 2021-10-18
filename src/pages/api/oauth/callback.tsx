@@ -1,25 +1,30 @@
-import { initializeApp } from "firebase/app";
+import { doc, setDoc } from "firebase/firestore";
+import db from "../../../core/Backend/Config";
 
 export default async function handler(req, res)
 {
+    /*
     const request = await fetch("https://www.bungie.net/Platform/App/OAuth/Token/",
         {
             method: "POST",
+            body: "grant_type=authorization_code&code=" + req.query.code,
             headers:
             {
                 "X-API-KEY": process.env.NEXT_PUBLIC_BUNGIE_API_KEY,
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Authorization": "Basic " +
                     Buffer.from(`${process.env.NEXT_PUBLIC_BUNGIE_OAUTH_CLIENT_ID}:${process.env.NEXT_PUBLIC_BUNGIE_OAUTH_CLIENT_SECRET}`).toString('base64')
-            },
-            body: "grant_type=authorization_code&code=" + req.query.code
+            }
         });
     const response = await request.json();
 
+    const at = response.access_token;
+    const rt = response.refresh_token;
 
-    const access_token = response.access_token;
-    const refresh_token = response.refresh_token;
+    console.log(at);
+    console.log(rt);
 
+    //await setDoc(doc(db, "tokens", "0"), { access_token: at, refresh_token: rt });
 
-    res.status(200).json("");
+    res.status(200).json(response);*/
 }
