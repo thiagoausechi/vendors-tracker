@@ -4,8 +4,6 @@ export default class HttpUtils
     static readonly #API_KEY = process.env.NEXT_PUBLIC_BUNGIE_API_KEY;
     static #bearerToken: string = "";
 
-
-
     static async request(url: string, method = 'GET' || 'POST', headers: HeadersInit, body?: string)
     {
         headers["X-API-KEY"] = process.env.NEXT_PUBLIC_BUNGIE_API_KEY;
