@@ -1,4 +1,4 @@
-import fs from "fs";
+import { initializeApp } from "firebase/app";
 
 export default async function handler(req, res)
 {
@@ -15,18 +15,11 @@ export default async function handler(req, res)
             body: "grant_type=authorization_code&code=" + req.query.code
         });
     const response = await request.json();
-    const data = {
-        access_token: response.access_token,
-        refresh_token: response.refresh_token
-    };
 
-    fs.writeFile("src/core/Cached/OAuthTokens.json", JSON.stringify(data), err =>
-    {
-        if (err) console.log(err);
-        console.log("Saved file!")
-    });
 
-    res.status(200).json(JSON.stringify({ code: req.query.code }));
+    const access_token = response.access_token;
+    const refresh_token = response.refresh_token;
+
+
+    res.status(200).json("");
 }
-
-// https://www.bungie.net/en/oauth/authorize?client_id=37599&response_type=code

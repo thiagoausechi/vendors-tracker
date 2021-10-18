@@ -4,49 +4,19 @@ export default class HttpUtils
     static readonly #API_KEY = process.env.NEXT_PUBLIC_BUNGIE_API_KEY;
     static #bearerToken: string = "";
 
-    constructor()
+
+
+    static async request(url: string, method = 'GET' || 'POST', headers: HeadersInit, body?: string)
     {
-        console.log(HttpUtils.#API_KEY);
-    }
-
-    static getRequest(url: string): Promise<Object>
-    {
-        return this.request(url);
-    }
-
-    static getOauthRequest(url: string): Promise<Object>
-    {
-        this.setTokenByRefresh();
-        const h = new Headers();
-        h.append("Authorization", "Bearer " + HttpUtils.#bearerToken);
-
-        return this.request(url, new Headers(), "GET");
-    }
-
-    static setTokenByRefresh(): string
-    {
-        const url_path = HttpUtils.BUNGIE_URL + "/App/OAuth/Token/";
-        //const request_body = "grant_type=refresh_token&refresh_token=" + getRefreshToken();
-
-        return "";
-    }
-
-    // TODO Test this!!
-    static async request(url: string, h?: Headers, method?: string, standart?: boolean): Promise<Object>
-    {
-        if (standart ?? true)
-            h.append("X-API-KEY", this.#API_KEY);
-
-        const request = new Request(url,
+        headers["X-API-KEY"] = process.env.NEXT_PUBLIC_BUNGIE_API_KEY;
+        const request = await fetch(url,
             {
-                method: method ?? "GET",
-                headers: h
+                method: method,
+                headers: headers,
+                body: body
             });
 
-        const response = fetch(request).then((Response) => { Response });
-
-        return {};
-        console.log(response);
+        return await request.json();
     }
 
     static encode(url: string): string
