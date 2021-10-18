@@ -1,6 +1,29 @@
 import Layout from "../components/layout/Layout";
+import Content from "../components/factory/ContentManager";
+import DataManager from "../core/DataManager";
+import Vendor from "../core/Vendor";
 
-export default function Home()
+export async function getStaticProps(context)
 {
-    return <Layout>{ }</Layout>;
+    const data = new DataManager();
+    const vendors: Vendor[] = data.getVendors();
+
+    return {
+        props: {
+            data: vendors.map((v) => v.serialize())
+        },
+        revalidate: 3600
+    }
+}
+
+export default function Home({ data })
+{
+    const vendors = [];
+
+    for (const i in data)
+        vendors.push(Vendor.fromSerialized(data[i]))
+
+    return <Layout>
+        <Content vendors={vendors} />
+    </Layout>;
 }

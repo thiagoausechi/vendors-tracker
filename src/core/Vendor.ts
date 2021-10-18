@@ -1,37 +1,30 @@
 import Guardian from "./Guardian";
+import JSONSerializable from "./JSONSerializable";
 import VendorSales from "./VendorSales";
 
-export default class Vendor
+export default class Vendor extends JSONSerializable
 {
     #properties = new Map<string, string>();
     #sales = new Map<Guardian, VendorSales>();
 
     constructor(hash: string)
     {
+        super();
         this.#properties.set("hash", hash);
     }
 
-    get hash(): string
+    getHash(): string
     {
         return this.#properties.get("hash");
     }
 
-    set location(value: string)
-    {
-        this.#properties.set("location", value);
-    }
-
-    get location(): string
-    {
-        return this.#properties.get("location");
-    }
-
-    set color(value: string)
+    setColor(value: string): Vendor
     {
         this.#properties.set("color", value);
+        return this;
     }
 
-    get color(): string
+    getColor(): string
     {
         return this.#properties.get("color");
     }
@@ -44,5 +37,21 @@ export default class Vendor
     getSale(guardian: Guardian): VendorSales
     {
         return this.#sales.get(guardian);
+    }
+
+    // SERIALIZATION
+    protected toObject()
+    {
+        return {
+            hash: this.getHash(),
+            color: this.getColor()
+        }
+    }
+
+    static fromSerialized(serialized: string): Vendor
+    {
+        const v = JSON.parse(serialized);
+        console.log(v);
+        return new Vendor(v.hash).setColor(v.color);
     }
 }
