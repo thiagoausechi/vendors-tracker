@@ -5,7 +5,8 @@ import Vendor from "../core/Vendor";
 
 export async function getStaticProps(context)
 {
-    const data = new DataManager();
+    const data = new DataManager(context.locale);
+
     const vendors: Vendor[] = data.getVendors();
 
     return {
