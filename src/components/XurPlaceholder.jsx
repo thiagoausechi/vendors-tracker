@@ -3,8 +3,10 @@ import { VendorTitle } from "./factory/VendorFactory";
 import styles from "../styles/Vendors.module.css";
 import { useCountdown } from "@kfiros/react-countdown-hook";
 
-export class XurPlaceholder extends React.Component {
-  render() {
+export class XurPlaceholder extends React.Component
+{
+  render()
+  {
     return (
       <div className={styles.wrapper}>
         <VendorTitle
@@ -24,8 +26,10 @@ export class XurPlaceholder extends React.Component {
   }
 }
 
-function DateCountdown(props) {
-  function nextFriday() {
+function DateCountdown(props)
+{
+  function nextFriday()
+  {
     var date = new Date();
     date.setDate(date.getDate() + ((5 /*Friday*/ + (7 - date.getDay())) % 7));
     date.setUTCHours(17, 0, 0, 0);
@@ -33,7 +37,8 @@ function DateCountdown(props) {
     return date;
   }
 
-  function aboutToArrive() {
+  function aboutToArrive()
+  {
     var date = new Date();
     var reset = new Date();
     reset.setUTCHours(17, 0, 0, 0);
@@ -52,7 +57,8 @@ function DateCountdown(props) {
   );
 }
 
-function ArriveDelay(props) {
+function ArriveDelay(props)
+{
   return (
     <div
       style={{
@@ -71,7 +77,8 @@ function ArriveDelay(props) {
   );
 }
 
-function Timer(props) {
+function Timer(props)
+{
   return (
     <div
       style={{
@@ -92,7 +99,8 @@ function Timer(props) {
   );
 }
 
-function Time(props) {
+function Time(props)
+{
   return (
     <div style={{ color: "white" }}>
       <div style={{ textAlign: "center" }}>
@@ -106,6 +114,7 @@ function Time(props) {
   );
 }
 
-function formattedTime(title, value) {
+function formattedTime(title, value)
+{
   return (title += value > 1 ? "s" : "");
 }
