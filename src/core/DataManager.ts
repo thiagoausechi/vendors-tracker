@@ -21,11 +21,13 @@ export default class DataManager
 
     async #start()
     {
-        const raw_vendors = await (await getDocs(query(collection(db, `vendors_raw`)))).docs;
-        const raw_meta = raw_vendors.find(d => d.id === "metadata").data();
+        try
+        {
+            const raw_vendors = await (await getDocs(query(collection(db, `vendors_raw`)))).docs;
+            const raw_meta = raw_vendors.find(d => d.id === "metadata").data();
 
-        console.log(raw_meta);
-
+            console.log(raw_meta);
+        } catch {}
         //console.log(`${collection_name} version ${db_version}`);
 
         //await setDoc(doc(db, collection_name, "metadata"), { version: "1" }).catch(e => console.log(e));

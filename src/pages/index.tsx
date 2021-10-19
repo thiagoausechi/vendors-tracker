@@ -1,5 +1,5 @@
 import Layout from "../components/layout/Layout";
-import Content from "../components/factory/ContentManager";
+import Content from "../components/factory/ContentFactory";
 import DataManager from "../core/DataManager";
 import Vendor from "../core/Vendor";
 

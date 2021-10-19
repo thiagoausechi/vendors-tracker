@@ -1,5 +1,8 @@
 module.exports = {
-  reactStrictMode: true,
+  reactStrictMode: false,
+  images: {
+    domains: ['www.bungie.net'],
+  },
   i18n: {
     locales: [
       "en",

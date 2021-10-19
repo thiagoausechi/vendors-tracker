@@ -9,9 +9,9 @@ interface LayoutProps
 export default function Layout(props: LayoutProps)
 {
     return (
-        <div>
+        <div className="container-fluid page-container">
             <Header />
-            {props.children}
+                {props.children}
             <Footer />
         </div>
     );

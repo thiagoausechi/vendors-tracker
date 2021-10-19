@@ -1,0 +1,60 @@
+.header
+{
+  color: white;
+
+  font-size: 1rem;
+
+  height: 55px;
+
+  margin-top: 12px;
+  margin-bottom: 12px;
+  padding-left: 55px;
+
+  background-position: 50% 50%;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+  
+.header.warlock
+{
+  background-image: url("https://www.bungie.net/common/destiny2_content/icons/73f5f779f40bfecb4690c395bc1941b9.jpg");
+}
+
+.header.hunter 
+{
+  background-image: url("https://www.bungie.net/common/destiny2_content/icons/e452c62485491a02fbc0e36f06d301d2.jpg");
+}
+
+.header.titan
+{
+  background-image: url("https://www.bungie.net/common/destiny2_content/icons/ecafe3e611c54e78656b85b77c8ee2f7.jpg");
+}
+
+/* === SALES SECTION SETTINGS === */
+.sectionWrapper
+{
+  font-weight: bold;
+
+  width: 900px;
+  padding: 0;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.wrapper
+{
+  margin-bottom: 12px;
+}
+
+.section
+{
+  width: 300px;
+
+  padding-left: 12px;
+  padding-right: 12px;
+}
