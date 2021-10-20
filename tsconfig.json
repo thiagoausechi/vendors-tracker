@@ -21,8 +21,9 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/components/XurPlaceholder.tsx"  ],
+    "**/*.tsx",
+    "src/components/XurPlaceholder.jsx"
+  ],
   "exclude": [
     "node_modules"
   ]

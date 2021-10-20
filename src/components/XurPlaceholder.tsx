@@ -3,8 +3,10 @@ import { VendorTitle } from "./factory/VendorFactory";
 import styles from "../styles/Vendors.module.css";
 import { useCountdown } from "../core/Hook/Timer";
 
-export class XurPlaceholder extends React.Component {
-  render() {
+export class XurPlaceholder extends React.Component
+{
+  render()
+  {
     return (
       <div className={styles.wrapper}>
         <VendorTitle
@@ -52,7 +54,8 @@ function DateCountdown(props) {
   );
 }
 
-function ArriveDelay(props) {
+function ArriveDelay(props)
+{
   return (
     <div
       style={{
@@ -71,7 +74,8 @@ function ArriveDelay(props) {
   );
 }
 
-function Timer(props) {
+function Timer(props)
+{
   return (
     <div
       style={{
@@ -92,7 +96,8 @@ function Timer(props) {
   );
 }
 
-function Time(props) {
+function Time(props)
+{
   return (
     <div style={{ color: "white" }}>
       <div style={{ textAlign: "center" }}>
@@ -106,6 +111,7 @@ function Time(props) {
   );
 }
 
-function formattedTime(title, value) {
+function formattedTime(title, value)
+{
   return (title += value > 1 ? "s" : "");
 }

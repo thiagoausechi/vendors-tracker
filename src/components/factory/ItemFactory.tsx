@@ -1,7 +1,8 @@
 import Image from 'next/image'
 import styles from "../../styles/Items.module.css";
 
-export default function ItemContainer(props) {
+export default function ItemContainer(props)
+{
     const item = props.item;
     const exotic = props.isExotic ? styles.exotic : "";
     item.item.isMW = item.status.some((stat) => stat.value >= 20);
@@ -14,7 +15,8 @@ export default function ItemContainer(props) {
     );
 }
 
-function ItemSection(props) {
+function ItemSection(props)
+{
     const item = props.item;
     return (
         <div className={styles.section}>
@@ -29,7 +31,8 @@ function ItemSection(props) {
     );
 }
 
-function IconWrapper(props) {
+function IconWrapper(props)
+{
     return (
         <div className={styles.iconWrapper}>
             <Image
@@ -49,7 +52,8 @@ function IconWrapper(props) {
     );
 }
 
-function StatusSection(props) {
+function StatusSection(props)
+{
     const amor_status = props.status.map((stat) => (
         <ArmorStatus key={stat.name} name={stat.name} value={stat.value} />
     ));
@@ -71,9 +75,10 @@ function StatusSection(props) {
     );
 }
 
-function ArmorStatus(props) {
-    console.log(props);
-    function calculateBar(value: number) {
+function ArmorStatus(props)
+{
+    function calculateBar(value: number)
+    {
         return Math.min((value / 42) * 100, 100);
     }
 
