@@ -8,7 +8,7 @@ export default function Favicon()
             <link rel="manifest" href="/assets/favicon/site.webmanifest" />
             <link rel="mask-icon" href="/assets/favicon/safari-pinned-tab.svg" color="#000000" />
             <link rel="shortcut icon" href="/assets/favicon/favicon.ico" />
-            
+
             <meta name="apple-mobile-web-app-title" content="Vendors Tracker" />
             <meta name="application-name" content="Vendors Tracker" />
             <meta name="msapplication-TileColor" content="#2b5797" />
