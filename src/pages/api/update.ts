@@ -1,5 +1,5 @@
 export default async function handler(req, res)
 {
-    await console.log(req.json());
+    console.log(req.query);
     res.status(200).json({});
 }
