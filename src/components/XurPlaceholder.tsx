@@ -2,6 +2,7 @@ import React from "react";
 import { VendorTitle } from "./factory/VendorFactory";
 import styles from "../styles/Vendors.module.css";
 import { useCountdown } from "../core/Hook/Timer";
+import next from "next";
 
 export class XurPlaceholder extends React.Component
 {
@@ -43,11 +44,9 @@ function DateCountdown(props) {
     return date.getDay() === 5 && date.getUTCHours() >= reset.getUTCHours();
   }
 
-  return aboutToArrive() ? (
-    <ArriveDelay />
-  ) : (
-    <Timer countdown={useCountdown(nextFriday()).countdown} />
-  );
+  const timer = useCountdown(nextFriday()).countdown;
+
+  return aboutToArrive() ? <ArriveDelay /> : <Timer countdown={timer} />;
 }
 
 function ArriveDelay(props)
