@@ -7,11 +7,11 @@ export default class HttpUtils
     static async request(url: string, method = 'GET' || 'POST', headers: HeadersInit, body?: string)
     {
         headers["X-API-KEY"] = process.env.NEXT_PUBLIC_BUNGIE_API_KEY;
-        const request = await fetch(url,
+        const request = await fetch(HttpUtils.encode(url),
             {
                 method: method,
-                headers: headers,
-                body: body
+                body: body,
+                headers: headers
             });
 
         return await request.json();
