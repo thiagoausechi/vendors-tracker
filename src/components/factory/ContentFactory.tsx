@@ -12,7 +12,7 @@ export default function Content(props)
         <div className={`row ${styles.contentWrapper}`}>
             <div className={styles.vendors}>
                 {vendors},
-                {xurArrived ? <XurPlaceholder /> : <XurPlaceholder />}
+                {xurArrived ? null : <XurPlaceholder />}
             </div>
         </ div>);
 }

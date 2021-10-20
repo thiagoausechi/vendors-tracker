@@ -43,14 +43,10 @@ function DateCountdown(props) {
     return date.getDay() === 5 && date.getUTCHours() >= reset.getUTCHours();
   }
 
-  const timer = useCountdown(nextFriday());
-
-  console.log(timer);
-
   return aboutToArrive() ? (
     <ArriveDelay />
   ) : (
-    <Timer countdown={timer} />
+    <Timer countdown={useCountdown(nextFriday()).countdown} />
   );
 }
 

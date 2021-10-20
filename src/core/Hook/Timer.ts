@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { intervalToDuration, subSeconds, compareAsc } from 'date-fns';
 
-export function useCountdown(date: Date): object {
+export function useCountdown(date: Date) {
     const [time, setTime] = useState(new Date());
 
     const countdown = useMemo(
