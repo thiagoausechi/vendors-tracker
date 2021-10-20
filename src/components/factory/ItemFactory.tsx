@@ -35,10 +35,9 @@ function IconWrapper(props)
 {
     return (
         <div className={styles.iconWrapper}>
-            <Image
+            <img 
                 src={props.icon}
                 className={`${styles.icon} ${props.isMW ? styles.masterworked : ""}`}
-                width={62} height={62}
                 alt={props.name}
             />
             <div className={styles.seasonWatermark}>

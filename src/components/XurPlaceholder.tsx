@@ -2,7 +2,6 @@ import React from "react";
 import { VendorTitle } from "./factory/VendorFactory";
 import styles from "../styles/Vendors.module.css";
 import { useCountdown } from "../core/Hook/Timer";
-import next from "next";
 
 export class XurPlaceholder extends React.Component
 {

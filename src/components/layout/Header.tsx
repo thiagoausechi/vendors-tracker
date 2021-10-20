@@ -1,4 +1,6 @@
 import Image from 'next/image'
+import React from 'react';
+import LoadingSpinner from '../LoadingSpinner';
 
 export default function Header(props)
 {

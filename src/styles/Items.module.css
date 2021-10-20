@@ -54,7 +54,7 @@
 .seasonWatermark
 {
     overflow: hidden;
-    transform: translate(0px, -66px);
+    transform: translate(2px, -64px);
     height: calc(66px - 2px);
     width: calc(66px - 2px);
     position: absolute;
@@ -72,7 +72,7 @@
 .masterworkFrame
 {
     box-sizing: border-box;
-    transform: translate(-1px, -68px);
+    transform: translate(1px, -65px);
     border-width: 0px;
     height: calc(66px - 2px);
     width: calc(66px - 2px);
