@@ -4,14 +4,15 @@ export default class HttpUtils
     static readonly #API_KEY = process.env.NEXT_PUBLIC_BUNGIE_API_KEY;
     static #bearerToken: string = "";
 
-    static async request(url: string, method = 'GET' || 'POST', headers: HeadersInit, body?: string)
+    static async request(props: RequestProps)
     {
-        headers["X-API-KEY"] = process.env.NEXT_PUBLIC_BUNGIE_API_KEY;
-        const request = await fetch(HttpUtils.encode(url),
+        if (props.useApiKey) props.headers["X-API-KEY"] = process.env.NEXT_PUBLIC_BUNGIE_API_KEY;
+        
+        const request = await fetch(HttpUtils.encode(props.url),
             {
-                method: method,
-                body: body,
-                headers: headers
+                method: props.method,
+                body: props.body,
+                headers: props.headers
             });
 
         return await request.json();
@@ -22,3 +23,11 @@ export default class HttpUtils
         return url.replace(" ", "%20").replace("#", "%23").replace("^", "%5E");
     }
 }
+
+export type RequestProps = {
+    url: string
+    method: "GET" | "POST"
+    headers: {[key: string]: string}
+    body?: string
+    useApiKey?: boolean
+};

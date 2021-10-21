@@ -2,8 +2,9 @@ import Image from 'next/image'
 import React from 'react';
 import LoadingSpinner from '../LoadingSpinner';
 
-export default function Header(props)
+export default function Header({ locale })
 {
+    
     return (
         <div className="row header">
             <div className="col-md-12">

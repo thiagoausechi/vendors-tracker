@@ -1,4 +1,4 @@
-export default function Footer(props)
+export default function Footer({ locale })
 {
     return (
         <footer className="row footer">

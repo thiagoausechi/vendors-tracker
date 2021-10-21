@@ -1,38 +1,39 @@
-import { doc, setDoc } from "firebase/firestore";
-import db from "../../../core/Backend/Config";
+import HttpUtils, { RequestProps } from "../../../core/Lib/HttpUtils";
 
-export default async function handler(req, res)
-{
-    if (req.query.code)
-    {
+export default async function handler(req, res) {
+    if (req.query.code) {
         console.log(`Receving a new OAuth Code. [${req.query.code}]`)
 
-        const request = await fetch("https://www.bungie.net/Platform/App/OAuth/Token/",
+        const base64_code = Buffer.from(`${process.env.NEXT_PUBLIC_BUNGIE_OAUTH_CLIENT_ID}:${process.env.NEXT_PUBLIC_BUNGIE_OAUTH_CLIENT_SECRET}`).toString('base64');
+
+        const config: RequestProps =
+        {
+            url: "https://www.bungie.net/Platform/App/OAuth/Token/",
+            method: "POST",
+            headers:
             {
-                method: "POST",
-                body: "grant_type=authorization_code&code=" + req.query.code,
-                headers:
-                {
-                    "X-API-KEY": process.env.NEXT_PUBLIC_BUNGIE_API_KEY,
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Authorization": "Basic " +
-                        Buffer.from(`${process.env.NEXT_PUBLIC_BUNGIE_OAUTH_CLIENT_ID}:${process.env.NEXT_PUBLIC_BUNGIE_OAUTH_CLIENT_SECRET}`).toString('base64')
-                }
-            });
-        const response = await request.json();
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": "Basic " + base64_code
+            },
+            body: "grant_type=authorization_code&code=" + req.query.code,
+            useApiKey: true
+        }
 
-        const at = response.access_token;
-        const rt = response.refresh_token;
+        try {
+            const response = await HttpUtils.request(config);
 
-        console.log("Access Token: " + at);
-        console.log("Refresh Token: " + rt);
+            const at = response.access_token;
+            const rt = response.refresh_token;
 
-        await setDoc(doc(db, "tokens", "0"), { access_token: at, refresh_token: rt });
+            console.log("Access Token: " + at);
+            console.log("Refresh Token: " + rt);
 
-        res.status(200).json(response);
+            res.status(200).json(response);
+        } catch (error) {
+            res.status(400).json({ req, res });
+        }
     }
-    else
-    {
+    else {
         res.status(400).json({ req, res });
     }
 }
