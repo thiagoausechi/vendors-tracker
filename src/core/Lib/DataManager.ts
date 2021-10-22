@@ -8,6 +8,7 @@ const VENDORS_CACHE_PATH = path.resolve('public/cached/vendors.json')
 
 export async function fetchVendorsData(msg: string)
 {
+    clearCache();
     return { hi: msg }
 }
 
