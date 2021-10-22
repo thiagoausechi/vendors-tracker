@@ -1,15 +1,16 @@
-import DestinyItem from "./DestinyItem";
 import Guardian from "./Guardian";
 import ArmorStatus from "./ArmorStatus";
 
-export default class DestinyItemArmor extends DestinyItem
+export default class DestinyItemArmor
 {
+    #properties = new Map<string, string>();
     #status = new Map<ArmorStatus, number>();
     #classType: Guardian;
 
     constructor(hash: string, type: number, classType: Guardian)
     {
-        super(hash, type);
+        this.#properties.set("hash", hash);
+        this.#properties.set("type", "" + type);
         this.#classType = classType;
     }
 

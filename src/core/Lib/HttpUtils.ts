@@ -6,8 +6,9 @@ export default class HttpUtils
 
     static async request(props: RequestProps)
     {
-        if (props.useApiKey) props.headers["X-API-KEY"] = process.env.NEXT_PUBLIC_BUNGIE_API_KEY;
-        
+        if (props.useApiKey)
+            props.headers = { "X-API-KEY": process.env.NEXT_PUBLIC_BUNGIE_API_KEY };
+
         const request = await fetch(HttpUtils.encode(props.url),
             {
                 method: props.method,
@@ -26,8 +27,8 @@ export default class HttpUtils
 
 export type RequestProps = {
     url: string
-    method: "GET" | "POST"
-    headers: {[key: string]: string}
+    method?: "GET" | "POST"
+    headers?: { [key: string]: string }
     body?: string
     useApiKey?: boolean
 };

@@ -1,21 +1,66 @@
+import fs from 'fs'
+import path from 'path'
 import Vendor from "../Vendor";
-import VendorsList from "../Cached/VendorsList.json"
+import ManifestManager from "../Lib/ManifestManager";
+import { getCollection, getValue, getDocFromCollection } from "../Backend/Database";
+
+const VENDORS_CACHE_PATH = path.resolve('public/cached/vendors.json')
+
+async function fetchVendorsData()
+{
+    return { hi: "hsuidahsidu" }
+}
+
+export async function getRawData()
+{
+    let cachedData = undefined;
+
+    try 
+    {
+        console.log("Getting vendors data from cache.")
+
+        cachedData = JSON.parse(
+            fs.readFileSync(VENDORS_CACHE_PATH, 'utf8'));
+    }
+    catch (e)
+    {
+        console.error("Vendors cache not initialized.");
+    }
+
+    if (!cachedData)
+    {
+        const data = await fetchVendorsData();
+        try
+        {
+            fs.writeFileSync(
+                VENDORS_CACHE_PATH,
+                JSON.stringify(data),
+                'utf8');
+        }
+        catch (e)
+        {
+            console.log("Error writing Vendos Cache to File!")
+            console.log(e);
+        }
+
+        cachedData = data;
+    }
+
+    return cachedData;
+}
+
 
 export default class DataManager
 {
     #vendors: Vendor[] = [];
-    locale: string;
+    #locale: string;
+    #manifest: ManifestManager;
 
     constructor(locale: string)
     {
         console.log(`\n Starting DataManager ${locale}`);
-
-        console.log(this.#vendors);
-
-        VendorsList.map((v) => { this.#vendors.push(new Vendor(v.hash).setColor(v.color)) });
-        VendorsList.map((v) => { this.#vendors.push(new Vendor(v.hash).setColor(v.color)) });
-        this.locale = locale;
-        // TODO If Xûr is not present, remove it from the array 
+        this.#manifest = new ManifestManager();
+        this.#locale = locale;
 
         this.#start();
     }
@@ -24,14 +69,24 @@ export default class DataManager
     {
         try
         {
-            //const raw_vendors = await (await getDocs(query(collection(db, `vendors_raw`)))).docs;
-            //const raw_meta = raw_vendors.find(d => d.id === "metadata").data();
+            const vendors_raw = await JSON.parse(await getValue("vendors", "data", "raw"));
+            vendors_raw.map((obj) =>
+            {
+                const vendor = new Vendor(obj.hash, this.#locale);
+                vendor.setColor(obj.color);
+                vendor.setIcons(obj.icon, obj.large_icon, obj.map_icon);
+                vendor.setLocation(obj.location.destination, obj.location.bubble);
 
-            //console.log(raw_meta);
-        } catch {}
-        //console.log(`${collection_name} version ${db_version}`);
+                this.#vendors.push(vendor);
+            });
 
-        //await setDoc(doc(db, collection_name, "metadata"), { version: "1" }).catch(e => console.log(e));
+            console.log("\n Successfully started DataManager");
+            console.log(`Total of ${this.getVendors().length} vendors registered.`);
+        } catch (e)
+        {
+            console.error("\n Could not start DataManager.");
+            console.error(e);
+        }
     }
 
     getVendors(): Vendor[]

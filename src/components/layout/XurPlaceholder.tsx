@@ -1,7 +1,7 @@
 import React from "react";
-import { VendorTitle } from "./factory/VendorFactory";
-import styles from "../styles/Vendors.module.css";
-import { useCountdown } from "../core/Hook/Timer";
+import { VendorTitle } from "../factory/VendorFactory";
+import styles from "../../styles/Vendors.module.css";
+import { useCountdown } from "../../core/Hook/Timer";
 
 export class XurPlaceholder extends React.Component
 {
@@ -26,8 +26,10 @@ export class XurPlaceholder extends React.Component
   }
 }
 
-function DateCountdown(props) {
-  function nextFriday(): Date {
+function DateCountdown(props)
+{
+  function nextFriday(): Date
+  {
     var date = new Date();
     date.setDate(date.getDate() + ((5 /*Friday*/ + (7 - date.getDay())) % 7));
     date.setUTCHours(17, 0, 0, 0);
@@ -35,7 +37,8 @@ function DateCountdown(props) {
     return date;
   }
 
-  function aboutToArrive(): boolean {
+  function aboutToArrive(): boolean
+  {
     var date = new Date();
     var reset = new Date();
     reset.setUTCHours(17, 0, 0, 0);

@@ -1,16 +1,20 @@
 import Guardian from "./Guardian";
-import JSONSerializable from "./JSONSerializable";
 import VendorSales from "./VendorSales";
 
-export default class Vendor extends JSONSerializable
+export default class Vendor
 {
     #properties = new Map<string, string>();
     #sales = new Map<Guardian, VendorSales>();
+    #locale?: string;
 
-    constructor(hash: string)
+    constructor(hash: string, locale?: string)
     {
-        super();
         this.#properties.set("hash", hash);
+        if (locale)
+        {
+            this.#locale = locale;
+            //setVendorName(hash, locale);
+        }
     }
 
     getHash(): string
@@ -29,6 +33,33 @@ export default class Vendor extends JSONSerializable
         return this.#properties.get("color");
     }
 
+    setIcons(icon: string, large_icon: string, map_icon: string)
+    {
+        this.#properties.set("icon", icon);
+        this.#properties.set("large_icon", large_icon);
+        this.#properties.set("map_icon", map_icon);
+    }
+
+    getIcon(key: 'icon' | 'large_icon' | 'map_icon'): string
+    {
+        return this.#properties.get(key);
+    }
+
+    setLocation(destination: string, bubble_id: number)
+    {
+        if (this.#locale)
+        {
+            //setVendorLocation(this.getHash(), destination, bubble_id, this.#locale);
+        }
+        else
+            console.error(`Unable to set Location to #${this.getHash()} without a Locale`);
+    }
+
+    getLocation()
+    {
+        //return translateVendorsLocation(this.getHash(),):
+    }
+
     addSale(guardian: Guardian, sale: VendorSales)
     {
         this.#sales.set(guardian, sale);
@@ -44,7 +75,11 @@ export default class Vendor extends JSONSerializable
     {
         return {
             hash: this.getHash(),
-            color: this.getColor()
+            color: this.getColor(),
+            icon: this.getIcon("icon"),
+            large_icon: this.getIcon("large_icon"),
+            map_icon: this.getIcon("map_icon"),
+            location: this.getLocation()
         }
     }
 

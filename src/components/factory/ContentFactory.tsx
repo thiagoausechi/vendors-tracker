@@ -1,6 +1,6 @@
 import Vendor from "./VendorFactory";
 import styles from "../../styles/Vendors.module.css";
-import { XurPlaceholder } from "../XurPlaceholder";
+import { XurPlaceholder } from "../layout/XurPlaceholder";
 
 export default function Content({ vendors, locale })
 {
@@ -10,7 +10,7 @@ export default function Content({ vendors, locale })
     return (
         <div className={`row ${styles.contentWrapper}`}>
             <div className={styles.vendors}>
-                {vendors_map},
+                {vendors_map}
                 {xurArrived ? null : <XurPlaceholder />}
             </div>
         </ div>);

@@ -32,3 +32,51 @@ export function useTranslation(locale: string)
         default: return en;
     }
 }
+
+/**
+ * Debug only.
+ *
+ * Used to console out all keys;
+ *
+ * @param locale
+ *
+export function getAllKeys(locale: string)
+{
+    console.log(useTranslation(locale).toString());
+}
+
+export function setTranslation(locale: string, key: string, translation: string)
+{
+    useTranslation(locale)[key] = translation;
+}
+
+export function setVendorName(hash: string, locale: string)
+{
+    const translated_name = "ZAVALA";
+    setTranslation(locale, `${hash}_name`, translated_name);
+}
+
+export function getVendorName(hash: string, locale: string): string
+{
+    return useTranslation(locale)[`${hash}_name`];
+}
+
+export function translateVendorsLocation(hash: string, destination: string, bubble_id: number, locale: string)
+{
+    return {
+        destination: "Tower",
+        bubble: "Courtyard"
+    }
+}
+
+export function setVendorLocation(hash: string, destination: string, bubble_id: number, locale: string)
+{
+    const translated = translateVendorsLocation(hash, destination, bubble_id, locale);
+    setTranslation(locale, `${hash}_location`, `${translated.bubble}, ${translated.destination}`);
+}
+
+export function getVendorLocation(hash: string, locale: string): string
+{
+    return useTranslation(locale)[`${hash}_location`];
+}
+*/
