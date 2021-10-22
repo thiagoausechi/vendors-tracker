@@ -6,9 +6,26 @@ import { getCollection, getValue, getDocFromCollection } from "../Backend/Databa
 
 const VENDORS_CACHE_PATH = path.resolve('public/cached/vendors.json')
 
-async function fetchVendorsData()
+async function fetchVendorsData(msg: string)
 {
-    return { hi: "hsuidahsidu" }
+    return { hi: msg }
+}
+
+export async function clearCache()
+{
+    console.log("\n Cleaning all cache.")
+    try
+    {
+        fs.writeFileSync(
+            VENDORS_CACHE_PATH,
+            "",
+            'utf8');
+        console.log("Successfully cleaned.")
+    } catch (e)
+    {
+        console.log("Could not clean cache.")
+        console.log(e);
+    }
 }
 
 export async function getRawData()
@@ -29,7 +46,7 @@ export async function getRawData()
 
     if (!cachedData)
     {
-        const data = await fetchVendorsData();
+        const data = await fetchVendorsData("Created cache");
         try
         {
             fs.writeFileSync(
