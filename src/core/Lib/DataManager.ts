@@ -6,7 +6,7 @@ import { getCollection, getValue, getDocFromCollection } from "../Backend/Databa
 
 const VENDORS_CACHE_PATH = path.resolve('public/cached/vendors.json')
 
-async function fetchVendorsData(msg: string)
+export async function fetchVendorsData(msg: string)
 {
     return { hi: msg }
 }

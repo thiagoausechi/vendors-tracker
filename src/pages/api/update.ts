@@ -1,3 +1,5 @@
+import { fetchVendorsData } from "../../core/Lib/DataManager";
+
 export default async function handler(req, res)
 {
     console.log("======================================================================");
@@ -25,9 +27,4 @@ export default async function handler(req, res)
         res.status(200).json({});
         return;
     }
-}
-
-function fetchVendorsData(arg0: string)
-{
-    throw new Error("Function not implemented.");
 }
