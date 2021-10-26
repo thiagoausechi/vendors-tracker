@@ -33,12 +33,12 @@ export default class XurVendor extends Vendor
         return this.#exotic.get(guardian);
     }
 
-    public toObject()
+    public toObject(locale: string)
     {
-        let result = super.toObject();
+        let result = super.toObject(locale);
         Guardian.LIST.map(guardian =>
         {
-            result["guardians"][guardian.classType].exotic = this.getExoticSale(guardian).toObject();
+            result["guardians"][guardian.classType].exotic = this.getExoticSale(guardian).toObject(locale);
         });
         result.custom_props = { location_initials: this.getLocationInitials() };
         return result;
