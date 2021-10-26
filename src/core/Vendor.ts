@@ -1,3 +1,5 @@
+import { useTranslation } from "../lang/Language";
+import { DestinyItemProps } from "./DestinyItemArmor";
 import Guardian from "./Guardian";
 import VendorSales from "./VendorSales";
 
@@ -5,16 +7,10 @@ export default class Vendor
 {
     #properties = new Map<string, string>();
     #sales = new Map<Guardian, VendorSales>();
-    #locale?: string;
 
-    constructor(hash: string, locale?: string)
+    constructor(hash: string)
     {
-        this.#properties.set("hash", hash);
-        if (locale)
-        {
-            this.#locale = locale;
-            //setVendorName(hash, locale);
-        }
+        this.setProperty("hash", hash);
     }
 
     getHash(): string
@@ -22,42 +18,47 @@ export default class Vendor
         return this.#properties.get("hash");
     }
 
+    setName(value: string): Vendor
+    {
+        return this.setProperty("name", value);
+    }
+
+    getName(): string
+    {
+        return this.getProperty("name");
+    }
+
     setColor(value: string): Vendor
     {
-        this.#properties.set("color", value);
-        return this;
+        return this.setProperty("color", value);;
     }
 
     getColor(): string
     {
-        return this.#properties.get("color");
+        return this.getProperty("color");
     }
 
-    setIcons(icon: string, large_icon: string, map_icon: string)
+    setIcons(icon: string, large_icon: string, map_icon: string): Vendor
     {
-        this.#properties.set("icon", icon);
-        this.#properties.set("large_icon", large_icon);
-        this.#properties.set("map_icon", map_icon);
+        this.setProperty("icon", icon);
+        this.setProperty("large_icon", large_icon);
+        this.setProperty("map_icon", map_icon);
+        return this;
     }
 
     getIcon(key: 'icon' | 'large_icon' | 'map_icon'): string
     {
-        return this.#properties.get(key);
+        return this.getProperty(key);
     }
 
-    setLocation(destination: string, bubble_id: number)
+    setLocation(value: string): Vendor
     {
-        if (this.#locale)
-        {
-            //setVendorLocation(this.getHash(), destination, bubble_id, this.#locale);
-        }
-        else
-            console.error(`Unable to set Location to #${this.getHash()} without a Locale`);
+        return this.setProperty("location", value);
     }
 
-    getLocation()
+    getLocation(): string
     {
-        //return translateVendorsLocation(this.getHash(),):
+        return this.getProperty("location");
     }
 
     addSale(guardian: Guardian, sale: VendorSales)
@@ -70,22 +71,66 @@ export default class Vendor
         return this.#sales.get(guardian);
     }
 
+    setProperty(property: string, value: string): Vendor
+    {
+        this.#properties.set(property, value);
+        return this;
+    }
+
+    getProperty(property: string): string
+    {
+        return this.#properties.get(property);
+    }
+
     // SERIALIZATION
-    protected toObject()
+    public toObject(locale: string): VendorProps
     {
         return {
             hash: this.getHash(),
+            name: this.getName(),
             color: this.getColor(),
             icon: this.getIcon("icon"),
             large_icon: this.getIcon("large_icon"),
             map_icon: this.getIcon("map_icon"),
-            location: this.getLocation()
-        }
+            location: this.getLocation(),
+            guardians: this.salesToObject(locale)
+        };
     }
 
-    static fromSerialized(serialized: string): Vendor
+    private salesToObject(locale: string): GuardianProps[]
     {
-        const v = JSON.parse(serialized);
-        return new Vendor(v.hash).setColor(v.color);
+        let result: GuardianProps[] = [];
+
+        for (const [guardian, sale] of this.#sales.entries())
+        {
+            result.push(
+                {
+                    hash: guardian.hash,
+                    name: useTranslation(locale)[`${guardian.hash}_name`],
+                    sales: this.getSale(guardian).toObject(locale)
+                }
+            );
+        }
+
+        return result;
     }
+}
+
+export type VendorProps = {
+    hash: string,
+    name: string,
+    color: string,
+    icon: string,
+    large_icon: string,
+    map_icon: string,
+    location?: string,
+    custom_props?: { [property: string]: string },
+    guardians: GuardianProps[]
+}
+
+export type GuardianProps = {
+    hash: string,
+    name: string,
+    exotic?: DestinyItemProps,
+    sales: DestinyItemProps[]
 }

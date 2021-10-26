@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { HASH_XUR } from '../../core/Lib/HashLexicon';
 import styles from "../../styles/Vendors.module.css";
 import SalesSection from './SalesFactory';
 
@@ -10,7 +11,7 @@ export default function Vendor(props)
       <VendorTitle name={vendor.name} icon={vendor.large_icon} />
       <VendorContainer
         vendor={vendor}
-        isXur={vendor.hash === "2190858386"}
+        isXur={vendor.hash == HASH_XUR}
       />
     </div>);
 }
@@ -30,11 +31,10 @@ export function VendorTitle(props)
   );
 }
 
-function VendorContainer(props)
+function VendorContainer({ vendor, isXur })
 {
-  const vendor = props.vendor;
-  const bg_id = props.isXur
-    ? `${vendor.hash}_${vendor.location_initials}`
+  const bg_id = isXur
+    ? `${vendor.hash}_${vendor.custom_props.location_initials}`
     : `${vendor.hash}`;
   return (
     <div

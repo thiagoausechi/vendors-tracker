@@ -5,10 +5,7 @@ import fr from "../lang/locales/fr";
 import it from "../lang/locales/it";
 import pt from "../lang/locales/pt-br";
 
-export default class Language
-{
-    public static readonly ACCEPTABLE_LOCALES = ['de', 'en', 'es', 'fr', 'it', 'pt-br'];
-}
+export const ACCEPTABLE_LOCALES: string[] = ['en', 'de', 'es', 'fr', 'it', 'pt-br'];
 
 /**
  * const t = useTranslation('en');
@@ -33,50 +30,7 @@ export function useTranslation(locale: string)
     }
 }
 
-/**
- * Debug only.
- *
- * Used to console out all keys;
- *
- * @param locale
- *
-export function getAllKeys(locale: string)
-{
-    console.log(useTranslation(locale).toString());
-}
-
 export function setTranslation(locale: string, key: string, translation: string)
 {
     useTranslation(locale)[key] = translation;
 }
-
-export function setVendorName(hash: string, locale: string)
-{
-    const translated_name = "ZAVALA";
-    setTranslation(locale, `${hash}_name`, translated_name);
-}
-
-export function getVendorName(hash: string, locale: string): string
-{
-    return useTranslation(locale)[`${hash}_name`];
-}
-
-export function translateVendorsLocation(hash: string, destination: string, bubble_id: number, locale: string)
-{
-    return {
-        destination: "Tower",
-        bubble: "Courtyard"
-    }
-}
-
-export function setVendorLocation(hash: string, destination: string, bubble_id: number, locale: string)
-{
-    const translated = translateVendorsLocation(hash, destination, bubble_id, locale);
-    setTranslation(locale, `${hash}_location`, `${translated.bubble}, ${translated.destination}`);
-}
-
-export function getVendorLocation(hash: string, locale: string): string
-{
-    return useTranslation(locale)[`${hash}_location`];
-}
-*/

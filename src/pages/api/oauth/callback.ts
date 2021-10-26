@@ -1,8 +1,15 @@
 import HttpUtils, { RequestProps } from "../../../core/Lib/HttpUtils";
+import { setTokens } from "../../../core/Lib/OAuthManager";
 
-export default async function handler(req, res) {
-    if (req.query.code) {
+export default async function handler(req, res)
+{
+    if (req.query.code)
+    {
         console.log(`Receving a new OAuth Code. [${req.query.code}]`)
+
+        /**
+        * TODO MOVE THIS TO AUTH MANAGER!!
+        */
 
         const base64_code = Buffer.from(`${process.env.NEXT_PUBLIC_BUNGIE_OAUTH_CLIENT_ID}:${process.env.NEXT_PUBLIC_BUNGIE_OAUTH_CLIENT_SECRET}`).toString('base64');
 
@@ -19,7 +26,8 @@ export default async function handler(req, res) {
             useApiKey: true
         }
 
-        try {
+        try
+        {
             const response = await HttpUtils.request(config);
 
             const at = response.access_token;
@@ -28,12 +36,20 @@ export default async function handler(req, res) {
             console.log("Access Token: " + at);
             console.log("Refresh Token: " + rt);
 
+            setTokens(
+                {
+                    access_token: at,
+                    refresh_token: rt
+                });
+
             res.status(200).json(response);
-        } catch (error) {
+        } catch (e)
+        {
             res.status(400).json({ req, res });
         }
     }
-    else {
+    else
+    {
         res.status(400).json({ req, res });
     }
 }

@@ -1,34 +1,25 @@
 import Layout from "../components/infra/Layout";
 import Content from "../components/factory/ContentFactory";
-import Vendor from "../core/Vendor";
 import React from "react";
-import { getRawData } from "../core/Lib/DataManager";
+import { getTranslatedKeys, getVendors } from "../core/Lib/DataManager";
 
-export async function getStaticProps(context)
+export async function getStaticProps({ locale })
 {
-    const data = await getRawData();
-    console.log(data);
-    //const vendors: Vendor[] = getVendors();
+    const vendors = await getVendors();
 
     return {
         props: {
-            data: {},// vendors.map((v) => v.serialize()),
-            locale: context.locale
-        },
-        revalidate: 1
+            data: vendors[locale],
+            locale: locale
+        }
     }
 }
 
 export default function Home({ data, locale })
 {
-    const vendors = [];
-
-    for (const i in data)
-        vendors.push(Vendor.fromSerialized(data[i]))
-
     return (
         <Layout locale={locale} >
-            <Content vendors={vendors} locale={locale} />
+            <Content vendors={data} locale={locale} />
         </Layout>
     );
 }

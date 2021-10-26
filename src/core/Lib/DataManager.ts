@@ -1,63 +1,43 @@
-import fs from 'fs'
-import path from 'path'
-import Vendor from "../Vendor";
-import ManifestManager from "../Lib/ManifestManager";
-import { getCollection, getValue, getDocFromCollection } from "../Backend/Database";
+import { ACCEPTABLE_LOCALES } from "../../lang/Language";
+import { getValue, updateFields } from "../Backend/Database";
+import http from "../Lib/HttpUtils";
+import { fetchWeeklyVendors } from "./CacheManager";
 
-const VENDORS_CACHE_PATH = path.resolve('public/cached/vendors.json')
+import ArmorStatus from "../ArmorStatus";
+import Guardian from "../Guardian";
 
-export async function fetchVendorsData(msg: string)
+/**
+ * Get Vendors data from cache.
+ * If there's no cached data, then fetch new data.
+ * 
+ * @returns { "locale": { VendorsProps } }
+ */
+export async function getVendors(): Promise<object>
 {
-    clearCache();
-    return { hi: msg }
-}
-
-export async function clearCache()
-{
-    console.log("\n Cleaning all cache.")
-    try
-    {
-        fs.writeFileSync(
-            VENDORS_CACHE_PATH,
-            "",
-            'utf8');
-        console.log("Successfully cleaned.")
-    } catch (e)
-    {
-        console.log("Could not clean cache.")
-        console.log(e);
-    }
-}
-
-export async function getRawData()
-{
-    let cachedData = undefined;
+    let cachedData;
 
     try 
     {
         console.log("Getting vendors data from cache.")
-
-        cachedData = JSON.parse(
-            fs.readFileSync(VENDORS_CACHE_PATH, 'utf8'));
+        const cache = await getValue("vendors", "data", "cache");
+        cachedData = await JSON.parse(cache);
     }
     catch (e)
     {
         console.error("Vendors cache not initialized.");
     }
 
-    if (!cachedData)
+    if (!cachedData || Object.keys(cachedData).length === 0)
     {
-        const data = await fetchVendorsData("Created cache");
+        const data = await fetchWeeklyVendors();
         try
         {
-            fs.writeFileSync(
-                VENDORS_CACHE_PATH,
-                JSON.stringify(data),
-                'utf8');
+            await updateFields("vendors", "data",
+                { cache: JSON.stringify(data) });
         }
         catch (e)
         {
-            console.log("Error writing Vendos Cache to File!")
+            console.log("Error writing Vendos Cache!")
             console.log(e);
         }
 
@@ -67,48 +47,105 @@ export async function getRawData()
     return cachedData;
 }
 
-
-export default class DataManager
+/**
+ * Get Bungie User information.
+ * 
+ * @param name Username with #code
+ * @param index For Crosssave accounts
+ * @returns Promise<UserProps>
+ */
+export async function getUser(name: string, index = 0): Promise<UserProps>
 {
-    #vendors: Vendor[] = [];
-    #locale: string;
-    #manifest: ManifestManager;
-
-    constructor(locale: string)
+    let user: UserProps;
+    try
     {
-        console.log(`\n Starting DataManager ${locale}`);
-        this.#manifest = new ManifestManager();
-        this.#locale = locale;
-
-        this.#start();
-    }
-
-    async #start()
-    {
-        try
-        {
-            const vendors_raw = await JSON.parse(await getValue("vendors", "data", "raw"));
-            vendors_raw.map((obj) =>
+        const user_request = (await http.request(
             {
-                const vendor = new Vendor(obj.hash, this.#locale);
-                vendor.setColor(obj.color);
-                vendor.setIcons(obj.icon, obj.large_icon, obj.map_icon);
-                vendor.setLocation(obj.location.destination, obj.location.bubble);
+                url: `https://www.bungie.net/platform/Destiny2/SearchDestinyPlayer/-1/${name}/?components=204`,
+                method: "GET",
+                useApiKey: true
+            })).Response;
 
-                this.#vendors.push(vendor);
-            });
+        const u = user_request[index];
+        const chars_request: string[] = (await http.request(
+            {
+                url: `https://www.bungie.net/Platform/Destiny2/${u.membershipType}/Profile/${u.membershipId}/?components=200`,
+                method: "GET",
+                useApiKey: true
+            })).Response.characters.data;
 
-            console.log("\n Successfully started DataManager");
-            console.log(`Total of ${this.getVendors().length} vendors registered.`);
-        } catch (e)
+        let chars;
+        if (chars_request)
         {
-            console.error("\n Could not start DataManager.");
-            console.error(e);
+            chars = {};
+            Object.keys(chars_request).map(k =>
+            {
+                chars[+chars_request[k]["classType"]] = chars_request[k]["characterId"];
+            });
+        }
+
+        user =
+        {
+            name: u.bungieGlobalDisplayName,
+            code: u.bungieGlobalDisplayNameCode,
+            membershipType: u.membershipType,
+            membershipId: u.membershipId,
+            characters: chars
         }
     }
-
-    getVendors(): Vendor[]
+    catch (e)
     {
-        return this.#vendors;
+        console.error("Could not load user");
+        console.error(e);
+    }
+
+    return user;
+}
+
+export type UserProps = {
+    name: string,
+    code: number,
+    membershipType: number,
+    membershipId: string,
+    characters?: { [key: number]: string }
+};
+
+export async function getTranslatedKeys()
+{
+    const manifest = await http.requestManifest();
+
+    try
+    {
+        for (const locale_index in ACCEPTABLE_LOCALES)
+        {
+            const locale = ACCEPTABLE_LOCALES[locale_index]
+            const definitions = await Promise.all([
+                http._requestManifestEntity(manifest, locale, "DestinyStatDefinition"),
+                http._requestManifestEntity(manifest, locale, "DestinyClassDefinition")
+            ]);
+            const stat_def = definitions[0];
+            const class_def = definitions[1];
+
+            // translate["hello"] = "Olá";
+            console.log(`================================================================================================= ${locale}.ts`);
+            console.log("\n");
+            console.log("// ARMOR STATS");
+            ArmorStatus.LIST.map(s =>
+            {
+                console.log(`translate["${s.hash}_name"] = "${stat_def[s.hash]["displayProperties"]["name"]}"`);
+                console.log(`translate["${s.hash}_description"] = "${stat_def[s.hash]["displayProperties"]["description"]}"`);
+            });
+
+            console.log("\n");
+            console.log("// GUARDIANS");
+            Guardian.LIST.map(g =>
+            {
+                console.log(`translate["${g.hash}_name"] = "${class_def[g.hash]["displayProperties"]["name"]}"`);
+            });
+        }
+    }
+    catch (e)
+    {
+        console.error(e);
     }
 }

@@ -1,11 +1,14 @@
+import { HASH_DISCIPLINE, HASH_INTELLECT, HASH_MOBILITY, HASH_RECOVERY, HASH_RESILIENCE, HASH_STRENGHT, HASH_XUR } from "./Lib/HashLexicon";
+
 export default class ArmorStatus 
 {
-    static readonly MOBILITY = new ArmorStatus(0, "2996146975");
-    static readonly RESILIENCE = new ArmorStatus(1, "392767087");
-    static readonly RECOVERY = new ArmorStatus(2, "1943323491");
-    static readonly DISCIPLINE = new ArmorStatus(3, "1735777505");
-    static readonly INTELLECT = new ArmorStatus(4, "144602215");
-    static readonly STRENGHT = new ArmorStatus(5, "4244567218");
+    static readonly MOBILITY = new ArmorStatus(0, HASH_MOBILITY);
+    static readonly RESILIENCE = new ArmorStatus(1, HASH_RESILIENCE);
+    static readonly RECOVERY = new ArmorStatus(2, HASH_RECOVERY);
+    static readonly DISCIPLINE = new ArmorStatus(3, HASH_DISCIPLINE);
+    static readonly INTELLECT = new ArmorStatus(4, HASH_INTELLECT);
+    static readonly STRENGHT = new ArmorStatus(5, HASH_STRENGHT);
+    static readonly LIST: ArmorStatus[] = [this.MOBILITY, this.RESILIENCE, this.RECOVERY, this.DISCIPLINE, this.INTELLECT, this.STRENGHT];
 
     private constructor(public readonly ordinal: number, public readonly hash: string)
     {

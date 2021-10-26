@@ -1,9 +1,14 @@
-import { doc, getDoc, setDoc, collection, query, getDocs, Query, DocumentData } from "firebase/firestore";
+import { doc, getDoc, setDoc, collection, query, updateDoc, Query, DocumentData } from "firebase/firestore";
 import db from "../Backend/Config";
 
-export async function setValue(collection: string, doc_name: string, keys: { [key: string]: string })
+export async function updateFields(collection: string, doc_name: string, fields: { [field: string]: string })
 {
-    await setDoc(doc(db, collection, doc_name), keys).catch(e => console.log(e));
+    await updateDoc(doc(db, collection, doc_name), fields).catch(e => console.log(e));
+}
+
+export async function setFields(collection: string, doc_name: string, fields: { [field: string]: string })
+{
+    await setDoc(doc(db, collection, doc_name), fields).catch(e => console.log(e));
 }
 
 export async function getValue(collection: string, doc: string, key: string)

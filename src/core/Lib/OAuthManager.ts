@@ -1,37 +1,34 @@
-import { getValue, setValue } from "../Backend/Database";
+import { getValue, setFields } from "../Backend/Database";
 
-export default class OAuthManager
+export async function setTokens(tokens: Tokens)
 {
-    async setTokens(tokens: Tokens)
-    {
-        setValue("tokens", "0",
-            {
-                access_token: tokens.access_token,
-                refresh_token: tokens.refresh_token
-            });
-    }
+    setFields("tokens", "0",
+        {
+            access_token: tokens.access_token,
+            refresh_token: tokens.refresh_token
+        });
+}
 
-    async getTokens(): Promise<Tokens>
-    {
-        return {
-            access_token: await this.getAccessToken(),
-            refresh_token: await this.getRefreshToken()
-        };
-    }
+export async function getTokens(): Promise<Tokens>
+{
+    return {
+        access_token: await this.getAccessToken(),
+        refresh_token: await this.getRefreshToken()
+    };
+}
 
-    async getAccessToken(): Promise<string>
-    {
-        return await getValue("tokens", "0", "access_token");
-    }
+export async function getAccessToken(): Promise<string>
+{
+    return await getValue("tokens", "0", "access_token");
+}
 
-    async getRefreshToken(): Promise<string>
-    {
-        return await getValue("tokens", "0", "refresh_token");
-    }
+export async function getRefreshToken(): Promise<string>
+{
+    return await getValue("tokens", "0", "refresh_token");
 }
 
 type Tokens =
-{
-    access_token: string
-    refresh_token: string
-}
+    {
+        access_token: string
+        refresh_token: string
+    }

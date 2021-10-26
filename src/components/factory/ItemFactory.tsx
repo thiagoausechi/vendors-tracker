@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { useTranslation } from '../../lang/Language';
 import styles from "../../styles/Items.module.css";
 
 export default function ItemContainer(props)
@@ -35,7 +36,7 @@ function IconWrapper(props)
 {
     return (
         <div className={styles.iconWrapper}>
-            <img 
+            <img
                 src={props.icon}
                 className={`${styles.icon} ${props.isMW ? styles.masterworked : ""}`}
                 alt={props.name}
@@ -54,7 +55,7 @@ function IconWrapper(props)
 function StatusSection(props)
 {
     const amor_status = props.status.map((stat) => (
-        <ArmorStatus key={stat.name} name={stat.name} value={stat.value} />
+        <ArmorStatus key={stat.hash} name={stat.name} value={stat.value} />
     ));
 
     const total_stats = props.status
