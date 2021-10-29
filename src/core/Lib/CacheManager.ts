@@ -41,7 +41,7 @@ export async function fetchXur()
         {
             console.log(`Xur arrived at location: ${xur_location.location_initials}`);
 
-            const isXurCached = getVendors()["en"].some((v) => v.hash == HASH_XUR);
+            const isXurCached = await getVendors()["en"].some((v) => v.hash == HASH_XUR);
             console.log(`Is Xur Cached? ${isXurCached}`);
 
             if (!isXurCached)
