@@ -1,5 +1,7 @@
 import { updateFields } from "../../core/Backend/Database";
-import { fetchWeeklyVendors, fetchXur } from "../../core/Lib/CacheManager";
+import { fetchWeeklyVendors, fetchXur, isXurActive } from "../../core/Lib/CacheManager";
+import { getVendors, requestRebuild } from "../../core/Lib/DataManager";
+import { HASH_XUR } from "../../core/Lib/HashLexicon";
 
 export default async function handler(req, res)
 {
@@ -10,40 +12,26 @@ export default async function handler(req, res)
     {
         const auth = req.query.auth;
         const env_auth = process.env.NEXT_PUBLIC_UPDATE_AUTH_KEY;
-        let msg = "";
 
         if (auth === env_auth)
         {
-            let updated_data;
-
             console.log("Is Xur Update? " + req.query.xur);
             if (req.query.xur === `true`)
-                updated_data = await fetchXur();
-            else
-                updated_data = await fetchWeeklyVendors();
-
-            console.log(updated_data ? "Updated data received." : "No updated data.");
-            if (updated_data)
             {
-                console.log("Updating vendors data on cache.");
-                try
+                if (isXurActive())
                 {
-                    await updateFields("vendors", "data",
-                        { cache: JSON.stringify(updated_data) });
+                    if (!(await getVendors()["en"].some((v) => v.hash == HASH_XUR)))
+                        await requestRebuild();
+                    else console.log("Xûr's data already cached. Skipped action.");
+                }
+                else console.log("Xûr not arrived yet. Skipped action.");
 
-                    msg = "New data saved to cached";
-                    // Call Vercel rebuild
-                }
-                catch (e)
-                {
-                    console.log("Error writing Vendos Cache!")
-                    console.log(e);
-                }
             }
-            else msg = "No updated data.";
+            else
+                await requestRebuild();
         }
 
-        res.status(200).json({ message: msg });
+        res.status(200).json({});
         return;
     }
     else

@@ -1,7 +1,7 @@
 import { ACCEPTABLE_LOCALES } from "../../lang/Language";
 import { getValue, updateFields } from "../Backend/Database";
 import http from "../Lib/HttpUtils";
-import { fetchWeeklyVendors } from "./CacheManager";
+import { fetchWeeklyVendors, fetchXur, isXurActive } from "./CacheManager";
 
 import ArmorStatus from "../ArmorStatus";
 import Guardian from "../Guardian";
@@ -10,7 +10,7 @@ import Guardian from "../Guardian";
  * Get Vendors data from cache.
  * If there's no cached data, then fetch new data.
  * 
- * @returns { "locale": { VendorsProps } }
+ * @returns { "locale": [ VendorsProps ] }
  */
 export async function getVendors(): Promise<object>
 {
@@ -29,7 +29,12 @@ export async function getVendors(): Promise<object>
 
     if (!cachedData || Object.keys(cachedData).length === 0)
     {
-        const data = await fetchWeeklyVendors();
+        let data;
+        if (await isXurActive())
+            data = await fetchXur();
+        else
+            data = await fetchWeeklyVendors();
+
         try
         {
             await updateFields("vendors", "data",
@@ -45,6 +50,32 @@ export async function getVendors(): Promise<object>
     }
 
     return cachedData;
+}
+
+export async function requestRebuild()
+{
+    console.log("Making a rebuild request.");
+
+    try
+    {
+        console.log("Clearing all cached info.");
+        await updateFields("vendors", "data", { cache: "" });
+
+        console.log("Sending HTTP Request.");
+        http.request(
+            {
+                url: process.env.NEXT_PUBLIC_VERCEL_REBUILD,
+                method: "GET",
+                useApiKey: false
+            }
+        );
+    }
+    catch (e)
+    {
+        console.error("Could not execute rebuild request.");
+        console.error(e);
+    }
+
 }
 
 /**
