@@ -5,7 +5,7 @@ import VendorSales from "../VendorSales";
 import DestinyItemArmor, { VALID_ARMOR } from "../DestinyItemArmor";
 import ArmorStatus from "../ArmorStatus";
 import { logPerformance, now } from "../Hook/Performance";
-import { getUser, UserProps } from "./DataManager";
+import { getUser, getVendors, UserProps } from "./DataManager";
 import { getValue } from "../Backend/Database";
 import http from "../Lib/HttpUtils";
 import XurVendor from "../XurVendor";
@@ -39,7 +39,23 @@ export async function fetchXur()
 
         if (xur_location)
         {
-            const xur_sales = await fetchVendorsSales([HASH_XUR]);
+            console.log(`Xur arrived at location: ${xur_location.location_initials}`);
+
+            const isXurCached = getVendors()["en"].some((v) => v.hash == HASH_XUR);
+            console.log(`Is Xur Cached? ${isXurCached}`);
+
+            if (!isXurCached)
+                return await fetchVendorsSales([HASH_XUR, ...WEEKLY_VENDORS]);
+            else
+            {
+                console.log("Xûr's data already cached. Skipped action.");
+                return;
+            }
+        }
+        else
+        {
+            console.log("Xûr not arrived yet. Skipped action.");
+            return;
         }
 
     } catch (e) { }

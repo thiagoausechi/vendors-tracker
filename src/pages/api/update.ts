@@ -1,6 +1,5 @@
 import { updateFields } from "../../core/Backend/Database";
-import { fetchWeeklyVendors } from "../../core/Lib/CacheManager";
-import { getVendors } from "../../core/Lib/DataManager";
+import { fetchWeeklyVendors, fetchXur } from "../../core/Lib/CacheManager";
 
 export default async function handler(req, res)
 {
@@ -11,18 +10,29 @@ export default async function handler(req, res)
     {
         const auth = req.query.auth;
         const env_auth = process.env.NEXT_PUBLIC_UPDATE_AUTH_KEY;
+        let msg = "";
 
-        console.log("Is Xur Update? " + req.query.xur);
         if (auth === env_auth)
         {
-            const updated_data = await fetchWeeklyVendors();
+            let updated_data;
+
+            console.log("Is Xur Update? " + req.query.xur);
+            if (req.query.xur === `true`)
+                updated_data = await fetchXur();
+            else
+                updated_data = await fetchWeeklyVendors();
+
+            console.log(updated_data ? "Updated data received." : "No updated data.");
             if (updated_data)
             {
-                console.log("Updating vendors data.");
+                console.log("Updating vendors data on cache.");
                 try
                 {
                     await updateFields("vendors", "data",
                         { cache: JSON.stringify(updated_data) });
+
+                    msg = "New data saved to cached";
+                    // Call Vercel rebuild
                 }
                 catch (e)
                 {
@@ -30,11 +40,10 @@ export default async function handler(req, res)
                     console.log(e);
                 }
             }
+            else msg = "No updated data.";
         }
-        else
-            console.log("Wrong Auth code!");
 
-        res.status(200).json({});
+        res.status(200).json({ message: msg });
         return;
     }
     else
