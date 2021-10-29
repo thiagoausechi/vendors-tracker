@@ -1,5 +1,4 @@
-import { updateFields } from "../../core/Backend/Database";
-import { fetchWeeklyVendors, fetchXur, isXurActive } from "../../core/Lib/CacheManager";
+import { isXurActive } from "../../core/Lib/CacheManager";
 import { getVendors, requestRebuild } from "../../core/Lib/DataManager";
 import { HASH_XUR } from "../../core/Lib/HashLexicon";
 
