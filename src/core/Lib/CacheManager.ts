@@ -84,9 +84,7 @@ export async function fetchVendorsSales(hashes: string[])
             const definitions = await Promise.all([
                 http._requestManifestEntity(manifest, locale, "DestinyVendorDefinition"),
                 http._requestManifestEntity(manifest, locale, "DestinyInventoryItemDefinition"),
-                http._requestManifestEntity(manifest, locale, "DestinyDestinationDefinition"),
-                http._requestManifestEntity(manifest, locale, "DestinyClassDefinition"),
-                http._requestManifestEntity(manifest, locale, "DestinyStatDefinition")
+                http._requestManifestEntity(manifest, locale, "DestinyDestinationDefinition")
             ]);
 
             console.log(`\n >>>>>>>>>> Fetching vendor for "${locale}" locale`);
