@@ -14,14 +14,27 @@ export default async function handler(req, res)
 
         if (auth === env_auth)
         {
-            console.log("Is Xur Update? " + req.query.xur);
+            console.log("Is Xûr Update? " + req.query.xur);
             if (req.query.xur === `true`)
             {
-                if (isXurActive())
+                console.log("Initiating Xûr rebuild request process.");
+                const xur_location = await isXurActive();
+
+                if (xur_location)
                 {
-                    if (!(await getVendors()["en"].some((v) => v.hash == HASH_XUR)))
+                    console.log(`Xûr arrived at location: ${xur_location.location_initials}`);
+
+                    const isXurCached = await getVendors()["en"].some((v) => v.hash == HASH_XUR);
+                    console.log(`Is Xûr Cached? ${isXurCached}`);
+
+                    if (!isXurCached)
                         await requestRebuild();
-                    else console.log("Xûr's data already cached. Skipped action.");
+                    else 
+                    {
+                        console.log("Xûr's data already cached. Skipped action.");
+                        res.status(200).json({});
+                        return;
+                    }
                 }
                 else console.log("Xûr not arrived yet. Skipped action.");
 

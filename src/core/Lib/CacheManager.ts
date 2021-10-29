@@ -39,10 +39,10 @@ export async function fetchXur()
 
         if (xur_location)
         {
-            console.log(`Xur arrived at location: ${xur_location.location_initials}`);
+            console.log(`Xûr arrived at location: ${xur_location.location_initials}`);
 
             const isXurCached = await getVendors()["en"].some((v) => v.hash == HASH_XUR);
-            console.log(`Is Xur Cached? ${isXurCached}`);
+            console.log(`Is Xûr Cached? ${isXurCached}`);
 
             if (!isXurCached)
                 return await fetchVendorsSales([HASH_XUR, ...WEEKLY_VENDORS]);
