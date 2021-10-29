@@ -1,11 +1,12 @@
+import { getValue } from "../../core/Backend/Database";
 import { isXurActive } from "../../core/Lib/CacheManager";
-import { getVendors, requestRebuild } from "../../core/Lib/DataManager";
+import { requestRebuild } from "../../core/Lib/DataManager";
 import { HASH_XUR } from "../../core/Lib/HashLexicon";
 
 export default async function handler(req, res)
 {
     console.log("======================================================================");
-    console.log("Request Received");
+    console.log("> Request Received");
 
     if (req.query.auth)
     {
@@ -17,21 +18,31 @@ export default async function handler(req, res)
             console.log("Is Xûr Update? " + req.query.xur);
             if (req.query.xur === `true`)
             {
-                console.log("Initiating Xûr rebuild request process.");
+                console.log("> Initiating Xûr rebuild request process.");
                 const xur_location = await isXurActive();
 
                 if (xur_location)
                 {
                     console.log(`Xûr arrived at location: ${xur_location.location_initials}`);
-
-                    const isXurCached = await getVendors()["en"].some((v) => v.hash == HASH_XUR);
-                    console.log(`Is Xûr Cached? ${isXurCached}`);
-
-                    if (!isXurCached)
-                        await requestRebuild();
-                    else 
+                    const cached_data = JSON.parse(await getValue("vendors", "data", "cache"));
+                    if (cached_data)
                     {
-                        console.log("Xûr's data already cached. Skipped action.");
+                        const isXurCached = cached_data["en"].some((v) => v.hash == HASH_XUR);
+                        console.log(`Is Xûr Cached? ${isXurCached}`);
+
+                        if (!isXurCached)
+                            await requestRebuild();
+                        else 
+                        {
+                            console.log("Xûr's data already cached. Skipped action.");
+                            res.status(200).json({});
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        console.error("> No cached data founded. Calling rebuild.");
+                        await requestRebuild();
                         res.status(200).json({});
                         return;
                     }

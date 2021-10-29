@@ -1,10 +1,11 @@
 import { ACCEPTABLE_LOCALES } from "../../lang/Language";
 import { getValue, updateFields } from "../Backend/Database";
 import http from "../Lib/HttpUtils";
-import { fetchWeeklyVendors, fetchXur, isXurActive } from "./CacheManager";
+import { fetchVendorsFromList, isXurActive } from "./CacheManager";
 
 import ArmorStatus from "../ArmorStatus";
 import Guardian from "../Guardian";
+import { HASH_XUR, WEEKLY_VENDORS } from "./HashLexicon";
 
 /**
  * Get Vendors data from cache.
@@ -20,7 +21,7 @@ export async function getVendors(): Promise<object>
     {
         console.log("Getting vendors data from cache.")
         const cache = await getValue("vendors", "data", "cache");
-        cachedData = await JSON.parse(cache);
+        cachedData = JSON.parse(cache);
     }
     catch (e)
     {
@@ -31,9 +32,9 @@ export async function getVendors(): Promise<object>
     {
         let data;
         if (await isXurActive())
-            data = await fetchXur();
+            data = await fetchVendorsFromList([HASH_XUR, ...WEEKLY_VENDORS]);
         else
-            data = await fetchWeeklyVendors();
+            data = await fetchVendorsFromList(WEEKLY_VENDORS);
 
         try
         {
@@ -54,7 +55,7 @@ export async function getVendors(): Promise<object>
 
 export async function requestRebuild()
 {
-    console.log("Making a rebuild request.");
+    console.log("\n> Making a rebuild request.");
 
     try
     {
@@ -62,13 +63,13 @@ export async function requestRebuild()
         await updateFields("vendors", "data", { cache: "" });
 
         console.log("Sending HTTP Request.");
-        http.request(
+        /*http.request(
             {
                 url: process.env.NEXT_PUBLIC_VERCEL_REBUILD,
                 method: "GET",
                 useApiKey: false
             }
-        );
+        );*/
     }
     catch (e)
     {

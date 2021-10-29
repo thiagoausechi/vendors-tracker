@@ -9,9 +9,9 @@ import { getUser, getVendors, UserProps } from "./DataManager";
 import { getValue } from "../Backend/Database";
 import http from "../Lib/HttpUtils";
 import XurVendor from "../XurVendor";
-import { HASH_XUR, WEEKLY_VENDORS } from "./HashLexicon";
+import { HASH_XUR } from "./HashLexicon";
 
-export async function fetchWeeklyVendors()
+export async function fetchVendorsFromList(hashes: string[])
 {
     const fetch_perf_start = now(); // debug performance time
 
@@ -19,9 +19,9 @@ export async function fetchWeeklyVendors()
 
     try
     {
-        result = await fetchVendorsSales(WEEKLY_VENDORS);
+        result = await fetchVendorsSales(hashes);
     }
-    catch (e) { }
+    catch (e) { console.error(e); }
 
     // debug performance time
     const fetch_perf_end = now();
@@ -29,36 +29,6 @@ export async function fetchWeeklyVendors()
     logPerformance(new Date(fetch_perf_end - fetch_perf_start), "Data fetch made");
 
     return result;
-}
-
-export async function fetchXur()
-{
-    try
-    {
-        const xur_location = await isXurActive();
-
-        if (xur_location)
-        {
-            console.log(`Xûr arrived at location: ${xur_location.location_initials}`);
-
-            const isXurCached = await getVendors()["en"].some((v) => v.hash == HASH_XUR);
-            console.log(`Is Xûr Cached? ${isXurCached}`);
-
-            if (!isXurCached)
-                return await fetchVendorsSales([HASH_XUR, ...WEEKLY_VENDORS]);
-            else
-            {
-                console.log("Xûr's data already cached. Skipped action.");
-                return;
-            }
-        }
-        else
-        {
-            console.log("Xûr not arrived yet. Skipped action.");
-            return;
-        }
-
-    } catch (e) { }
 }
 
 export async function fetchVendorsSales(hashes: string[])
@@ -107,6 +77,8 @@ export async function fetchVendorsSales(hashes: string[])
 
                 const vendor_perf_end = now();
                 logPerformance(new Date(vendor_perf_end - vendor_perf_start), ` > ${vendor.getName()} (#${vendor.getHash()}) created`);
+
+                console.log(vendor.toObject(locale));
 
                 vendors.push(vendor.toObject(locale));
             }
