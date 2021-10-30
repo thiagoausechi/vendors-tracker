@@ -63,13 +63,13 @@ export async function requestRebuild()
         await updateFields("vendors", "data", { cache: "" });
 
         console.log("Sending HTTP Request.");
-        /*http.request(
+        http.request(
             {
                 url: process.env.NEXT_PUBLIC_VERCEL_REBUILD,
                 method: "GET",
                 useApiKey: false
             }
-        );*/
+        );
     }
     catch (e)
     {

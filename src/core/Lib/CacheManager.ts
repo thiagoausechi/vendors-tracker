@@ -9,7 +9,7 @@ import { getUser, getVendors, UserProps } from "./DataManager";
 import { getValue } from "../Backend/Database";
 import http from "../Lib/HttpUtils";
 import XurVendor from "../XurVendor";
-import { HASH_XUR } from "./HashLexicon";
+import { HASH_EXOTIC_GEAR, HASH_XUR } from "./HashLexicon";
 
 export async function fetchVendorsFromList(hashes: string[])
 {
@@ -77,8 +77,6 @@ export async function fetchVendorsSales(hashes: string[])
 
                 const vendor_perf_end = now();
                 logPerformance(new Date(vendor_perf_end - vendor_perf_start), ` > ${vendor.getName()} (#${vendor.getHash()}) created`);
-
-                console.log(vendor.toObject(locale));
 
                 vendors.push(vendor.toObject(locale));
             }
@@ -158,8 +156,7 @@ async function createVendor(params: VendorParams): Promise<Vendor>
 
     Guardian.LIST.map(g => 
     {
-        const sale = parseSales(statics.sales, item_def, hash, g);
-        vendor.addSale(g, sale);
+        vendor.addSale(g, parseSales(statics.sales, item_def, vendor, g));
     });
 
     return vendor;
@@ -192,11 +189,11 @@ export async function getStaticSales(user: UserProps, guardian: Guardian): Promi
     return result;
 }
 
-export function parseSales(raw: object, item_def_raw: object, vendor: string, guardian: Guardian): VendorSales
+export function parseSales(raw: object, item_def_raw: object, vendor: Vendor, guardian: Guardian): VendorSales
 {
     const result = new VendorSales();
-    const saleItems = raw[guardian.classType]["sales"][vendor]["saleItems"];
-    const saleStats = raw[guardian.classType]["stats"][vendor]["stats"]["data"];
+    const saleItems = raw[guardian.classType]["sales"][vendor.getHash()]["saleItems"];
+    const saleStats = raw[guardian.classType]["stats"][vendor.getHash()]["stats"]["data"];
     const salesKeys = Object.keys(saleItems);
 
     salesKeys.map(key => 
@@ -212,10 +209,15 @@ export function parseSales(raw: object, item_def_raw: object, vendor: string, gu
                 .setName(item_def["displayProperties"]["name"])
                 .setIcon(item_def["displayProperties"]["icon"])
                 .setWatermark(wm_versions[wm_versions.length - 1]);
-
             ArmorStatus.LIST.map(s => armor.setStatus(s, saleStats[key]["stats"][s.hash]["value"]));
-
-            result.addItem(armor);
+            if (item_def["summaryItemHash"] == HASH_EXOTIC_GEAR)
+            {
+                if ((vendor instanceof XurVendor) &&
+                    (item_def["classType"] == guardian.classType))
+                    (vendor as XurVendor).setExoticSale(guardian, armor);
+            }
+            else
+                result.addItem(armor);
         }
     });
 

@@ -1,4 +1,8 @@
 
+// GEAR QUALITY
+export const HASH_LEGENDARY_GEAR = "3407672161";
+export const HASH_EXOTIC_GEAR    = "715326750";
+
 // STATUS
 export const HASH_MOBILITY       = "2996146975";
 export const HASH_RESILIENCE     = "392767087";

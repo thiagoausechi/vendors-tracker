@@ -131,6 +131,6 @@ export type VendorProps = {
 export type GuardianProps = {
     hash: string,
     name: string,
-    exotic?: DestinyItemProps,
+    //exotic?: DestinyItemProps,
     sales: DestinyItemProps[]
 }
