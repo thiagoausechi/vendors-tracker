@@ -72,7 +72,7 @@ export async function requestRebuild()
                 useApiKey: false
             }
         );
-        const date = new Date(deploy.job.createdAt).getUTCDate();
+        const date = new Date(deploy.job.createdAt).toUTCString();
         console.log(`Executed request at ${date}`);
     }
     catch (e)
