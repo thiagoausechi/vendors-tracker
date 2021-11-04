@@ -63,13 +63,17 @@ export async function requestRebuild()
         await updateFields("vendors", "data", { cache: "" });
 
         console.log("Sending HTTP Request.");
-        http.request(
+        const deploy = await http.request(
             {
                 url: process.env.NEXT_PUBLIC_VERCEL_REBUILD,
-                method: "GET",
+                method: "POST",
+                headers: {},
+                body: "",
                 useApiKey: false
             }
         );
+        const date = new Date(deploy.job.createdAt).getUTCDate();
+        console.log(`Executed request at ${date}`);
     }
     catch (e)
     {
