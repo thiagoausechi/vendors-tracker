@@ -85,6 +85,10 @@ export default class Vendor
     // SERIALIZATION
     public toObject(locale: string): VendorProps
     {
+        let sales = {};
+        this.#sales.size > 0 ? sales["armor"]["guardians"] = this.salesToObject(locale) : null;
+        // TODO Modify Sales to ArmorSales
+
         return {
             hash: this.getHash(),
             name: this.getName(),
@@ -93,7 +97,8 @@ export default class Vendor
             large_icon: this.getIcon("large_icon"),
             map_icon: this.getIcon("map_icon"),
             location: this.getLocation(),
-            guardians: this.salesToObject(locale)
+            sales: sales
+
         };
     }
 
@@ -125,12 +130,30 @@ export type VendorProps = {
     map_icon: string,
     location?: string,
     custom_props?: { [property: string]: string },
-    guardians: GuardianProps[]
+    sales:
+    {
+        armor?: { guardians: GuardianProps[] },
+        bounty?: { bounties: BountyProps[] }
+    }
 }
 
 export type GuardianProps = {
     hash: string,
     name: string,
-    //exotic?: DestinyItemProps,
     sales: DestinyItemProps[]
+}
+
+export type BountyProps = {
+    name: string,
+    icon: string,
+    type: string,
+    description: string,
+    objectives:
+    [
+        {
+            description: string,
+            completion: number
+        }
+    ]
+
 }

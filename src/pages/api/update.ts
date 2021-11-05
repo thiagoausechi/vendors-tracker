@@ -24,27 +24,31 @@ export default async function handler(req, res)
                 if (xur_location)
                 {
                     console.log(`Xûr arrived at location: ${xur_location.location_initials}`);
-                    const cached_data = JSON.parse(await getValue("vendors", "data", "cache"));
-                    if (cached_data)
+                    const cache = await getValue("vendors", "data", "cache");
+                    if (cache !== "")
                     {
-                        const isXurCached = cached_data["en"].some((v) => v.hash == HASH_XUR);
-                        console.log(`Is Xûr Cached? ${isXurCached}`);
-
-                        if (!isXurCached)
-                            await requestRebuild();
-                        else 
+                        const cached_data = JSON.parse(cache)
+                        if (cached_data)
                         {
-                            console.log("Xûr's data already cached. Skipped action.");
+                            const isXurCached = cached_data["en"].some((v) => v.hash == HASH_XUR);
+                            console.log(`Is Xûr Cached? ${isXurCached}`);
+
+                            if (!isXurCached)
+                                await requestRebuild();
+                            else 
+                            {
+                                console.log("Xûr's data already cached. Skipped action.");
+                                res.status(200).json({});
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            console.error("> No cached data founded. Calling rebuild.");
+                            await requestRebuild();
                             res.status(200).json({});
                             return;
                         }
-                    }
-                    else
-                    {
-                        console.error("> No cached data founded. Calling rebuild.");
-                        await requestRebuild();
-                        res.status(200).json({});
-                        return;
                     }
                 }
                 else console.log("Xûr not arrived yet. Skipped action.");

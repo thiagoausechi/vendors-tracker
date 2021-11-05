@@ -27,3 +27,21 @@ export const HASH_FAILSAFE       = "1576276905";
 export const WEEKLY_VENDORS      = [ HASH_ZAVALA,  HASH_SHAXX,
                                      HASH_DRIFTER, HASH_ADA,
                                      HASH_DEVRIM,  HASH_FAILSAFE ];
+
+export const DestinyUnlockValueUIStyle =
+{
+    Automatic: 0,
+    Fraction: 1,
+    Checkbox: 2,
+    Percentage: 3,
+    DateTime: 4,
+    FractionFloat: 5,
+    Integer: 6,
+    TimeDuration: 7,
+    Hidden: 8,
+    Multiplier: 9,
+    GreenPips: 10,
+    RedPips: 11,
+    ExplicitPercentage: 12,
+    RawFloat: 13,
+};
