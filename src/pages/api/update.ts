@@ -23,7 +23,7 @@ export default async function handler(req, res)
 
                 if (xur_location)
                 {
-                    console.log(`Xûr arrived at location: ${xur_location.location_initials}`);
+                    console.log(`Xûr arrived at location: ${xur_location.x_location_initials}`);
                     const cache = await getValue("vendors", "data", "cache");
                     if (cache !== "")
                     {
