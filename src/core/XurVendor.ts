@@ -40,7 +40,8 @@ export default class XurVendor extends Vendor
 
         Guardian.LIST.map(guardian =>
         {
-            result['guardians'][guardian.classType]['exotic'] = this.getExoticSale(guardian).toObject(locale);
+            result['sales']['armor']['guardians'][guardian.classType]['exotic'] =
+                this.getExoticSale(guardian).toObject(locale);
         });
 
         return result;

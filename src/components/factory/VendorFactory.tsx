@@ -50,7 +50,7 @@ function VendorContainer({ vendor, isXur })
       />
 
       <SalesSection
-        guardians={vendor.guardians}
+        guardians={vendor.sales.armor.guardians}
         color={vendor.color}
       />
     </div>

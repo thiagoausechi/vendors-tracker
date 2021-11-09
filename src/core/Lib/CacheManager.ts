@@ -5,11 +5,12 @@ import VendorSales from "../VendorSales";
 import DestinyItemArmor, { VALID_ARMOR } from "../DestinyItemArmor";
 import ArmorStatus from "../ArmorStatus";
 import { logPerformance, now } from "../Hook/Performance";
-import { getUser, getVendors, UserProps } from "./DataManager";
+import { getUser, UserProps } from "./DataManager";
 import { getValue } from "../Backend/Database";
 import http from "../Lib/HttpUtils";
 import XurVendor from "../XurVendor";
 import { HASH_EXOTIC_GEAR, HASH_XUR } from "./HashLexicon";
+import { execOnce } from "next/dist/shared/lib/utils";
 
 export async function fetchVendorsFromList(hashes: string[])
 {
@@ -33,6 +34,8 @@ export async function fetchVendorsFromList(hashes: string[])
 
 export async function fetchVendorsSales(hashes: string[])
 {
+    console.log("Fetching data for this hashes: " + hashes.toString());
+
     const result = {};
 
     try
@@ -76,7 +79,8 @@ export async function fetchVendorsSales(hashes: string[])
                 );
 
                 const vendor_perf_end = now();
-                logPerformance(new Date(vendor_perf_end - vendor_perf_start), ` > ${vendor.getName()} (#${vendor.getHash()}) created`);
+                logPerformance(new Date(vendor_perf_end - vendor_perf_start),
+                    ` > ${vendor.getName()} (#${vendor.getHash()}) created`);
 
                 vendors.push(vendor.toObject(locale));
             }
@@ -98,8 +102,15 @@ export async function fetchVendorsSales(hashes: string[])
     return result;
 }
 
-export async function isXurActive(): Promise<XurLocationProps>
+export async function isXurActiveNSJLK(): Promise<XurLocationProps>
 {
+    const now = new Date();
+
+    if (now.getDay()) return undefined;
+    if () return undefined;
+    if () return undefined;
+    if () return undefined;
+
     const response = (await http.request(
         {
             url: "https://paracausal.science/xur/current.json",
@@ -112,48 +123,51 @@ export async function isXurActive(): Promise<XurLocationProps>
     {
         const { location, destinationHash, bubbleIndex } = response;
         return {
-            location_initials: location,
-            destination: destinationHash,
-            bubble: bubbleIndex
+            x_location_initials: location,
+            x_destination: destinationHash,
+            x_bubble: bubbleIndex
         };
     }
+
     else return undefined;
 }
 
 async function createVendor(params: VendorParams): Promise<Vendor>
 {
     const { statics, definitions } = params;
-    const { hash, destination, bubble, color, icon, large_icon, map_icon } = statics.vendor;
+    let { hash, destination, bubble, color, icon, large_icon, map_icon } = statics.vendor;
 
     const vendor_def = definitions[0][hash];
     const item_def = definitions[1];
-    let destination_def = definitions[2][destination];
 
+    // Initiater Vendor
     let vendor: Vendor;
     if (hash == HASH_XUR) vendor = new XurVendor();
     else vendor = new Vendor(hash);
 
+    // Set Vendor's properties
     vendor.setName(vendor_def.displayProperties.name);
     vendor.setColor(color);
     vendor.setIcons(icon, large_icon, map_icon);
 
-    if (destination && bubble)
-        vendor.setLocation
-            (
-                `${destination_def.bubbles[bubble]["displayProperties"]["name"]}, ${destination_def["displayProperties"]["name"]}`
-            );
-    else if (vendor instanceof XurVendor)
+    // Set Vendor's location
+    if (vendor instanceof XurVendor)
     {
-        const { location_initials, destination, bubble } = await isXurActive();
-        destination_def = definitions[2][destination];
-
-        (vendor as XurVendor).setLocationInitials(location_initials);
+        const { x_location_initials, x_destination, x_bubble } = await isXurActive();
+        bubble = x_bubble;
+        destination = x_destination;
+        (vendor as XurVendor).setLocationInitials(x_location_initials);
+    }
+    if (destination && bubble)
+    {
+        const destination_def = definitions[2][destination];
         vendor.setLocation
             (
                 `${destination_def.bubbles[bubble]["displayProperties"]["name"]}, ${destination_def["displayProperties"]["name"]}`
             );
     }
 
+    // Add Vendor's sale
     Guardian.LIST.map(g => 
     {
         vendor.addSale(g, parseSales(statics.sales, item_def, vendor, g));
@@ -218,6 +232,8 @@ export function parseSales(raw: object, item_def_raw: object, vendor: Vendor, gu
             }
             else
                 result.addItem(armor);
+            console.log(armor);
+
         }
     });
 
@@ -234,7 +250,7 @@ type VendorParams = {
 };
 
 type XurLocationProps = {
-    location_initials: string,
-    destination: string,
-    bubble: number
+    x_location_initials: string,
+    x_destination: string,
+    x_bubble: number
 };

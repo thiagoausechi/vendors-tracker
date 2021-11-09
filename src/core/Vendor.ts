@@ -85,8 +85,14 @@ export default class Vendor
     // SERIALIZATION
     public toObject(locale: string): VendorProps
     {
-        let sales = {};
-        this.#sales.size > 0 ? sales["armor"]["guardians"] = this.salesToObject(locale) : null;
+        let sales = {
+            armor: { guardians: [] }
+        };
+
+        if (this.#sales.size > 0)
+            sales['armor']['guardians'] = this.salesToObject(locale);
+
+
         // TODO Modify Sales to ArmorSales
 
         return {
@@ -140,6 +146,7 @@ export type VendorProps = {
 export type GuardianProps = {
     hash: string,
     name: string,
+    exotic?: DestinyItemProps
     sales: DestinyItemProps[]
 }
 
