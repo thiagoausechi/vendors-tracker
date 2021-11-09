@@ -43,5 +43,5 @@ export const DestinyUnlockValueUIStyle =
     GreenPips: 10,
     RedPips: 11,
     ExplicitPercentage: 12,
-    RawFloat: 13,
+    RawFloat: 13
 };
