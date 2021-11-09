@@ -4,8 +4,6 @@ import { HASH_HUNTER, HASH_TITAN, HASH_WARLOCK } from "../../core/Lib/HashLexico
 
 export default function SalesSection(props)
 {
-  console.log(props);
-
   const guardians_sales = props.guardians.map((guardian) => (<SaleSection key={guardian.hash} guardian={guardian} />));
 
   return (

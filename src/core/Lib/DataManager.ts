@@ -1,7 +1,7 @@
 import { ACCEPTABLE_LOCALES } from "../../lang/Language";
 import { getValue, updateFields } from "../Backend/Database";
 import http from "../Lib/HttpUtils";
-import { fetchVendorsFromList } from "./CacheManager";
+import { fetchVendorsFromList, isXurActive } from "./CacheManager";
 
 import ArmorStatus from "../ArmorStatus";
 import Guardian from "../Guardian";
@@ -31,19 +31,14 @@ export async function getVendors(): Promise<object>
     if (!cachedData || Object.keys(cachedData).length === 0)
     {
         let data;
-        console.log(await isXurActive());
-        if (await isXurActive() !== null)
-        {
-            console.log("Calling XURRRRRRRr");
-
+        if (await isXurActive())
             data = await fetchVendorsFromList([HASH_XUR, ...WEEKLY_VENDORS]);
-        }
         else
             data = await fetchVendorsFromList(WEEKLY_VENDORS);
 
         try
         {
-            if (!cachedData || Object.keys(cachedData).length === 0)
+            if (!data || Object.keys(data).length === 0)
                 throw "Not a valid data!";
             else
                 await updateFields("vendors", "data",

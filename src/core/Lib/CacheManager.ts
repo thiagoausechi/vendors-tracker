@@ -102,14 +102,14 @@ export async function fetchVendorsSales(hashes: string[])
     return result;
 }
 
-export async function isXurActiveNSJLK(): Promise<XurLocationProps>
+export async function isXurActive(): Promise<XurLocationProps>
 {
     const now = new Date();
 
-    if (now.getDay()) return undefined;
-    if () return undefined;
-    if () return undefined;
-    if () return undefined;
+    if (now.getUTCDay() > 2) return undefined; // After Tue
+    if (now.getUTCDay() < 5) return undefined; // Before Fry
+    if (now.getUTCDay() === 2 && now.getUTCHours() > 17) return undefined; // Is Tue, but after reset
+    if (now.getUTCDay() === 5 && now.getUTCHours() < 17) return undefined; // Is Fry, but before reset
 
     const response = (await http.request(
         {
@@ -151,9 +151,10 @@ async function createVendor(params: VendorParams): Promise<Vendor>
     vendor.setIcons(icon, large_icon, map_icon);
 
     // Set Vendor's location
-    if (vendor instanceof XurVendor)
+    const xur_location = await isXurActive();
+    if ((vendor instanceof XurVendor) && xur_location)
     {
-        const { x_location_initials, x_destination, x_bubble } = await isXurActive();
+        const { x_location_initials, x_destination, x_bubble } = xur_location;
         bubble = x_bubble;
         destination = x_destination;
         (vendor as XurVendor).setLocationInitials(x_location_initials);
@@ -232,7 +233,6 @@ export function parseSales(raw: object, item_def_raw: object, vendor: Vendor, gu
             }
             else
                 result.addItem(armor);
-            console.log(armor);
 
         }
     });
