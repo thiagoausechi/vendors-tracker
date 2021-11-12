@@ -105,11 +105,13 @@ export async function fetchVendorsSales(hashes: string[])
 export async function isXurActive(): Promise<XurLocationProps>
 {
     const now = new Date();
+    console.log(`Day: ${now.getUTCDay()} || Hour: ${now.getUTCHours()}`);
 
-    if (now.getUTCDay() > 2) return undefined; // After Tue
-    if (now.getUTCDay() < 5) return undefined; // Before Fry
+    if (now.getUTCDay() > 2 && now.getUTCDay() < 5) return undefined; // After Tue and before fry
     if (now.getUTCDay() === 2 && now.getUTCHours() > 17) return undefined; // Is Tue, but after reset
     if (now.getUTCDay() === 5 && now.getUTCHours() < 17) return undefined; // Is Fry, but before reset
+
+    console.log("It's weekend.");
 
     const response = (await http.request(
         {

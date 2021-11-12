@@ -2,9 +2,11 @@ import Layout from "../components/infra/Layout";
 import Content from "../components/factory/ContentFactory";
 import React from "react";
 import { getTranslatedKeys, getVendors } from "../core/Lib/DataManager";
+import { isXurActive } from "../core/Lib/CacheManager";
 
 export async function getStaticProps({ locale })
 {
+    const xur = await isXurActive();
     const vendors = await getVendors();
 
     return {
