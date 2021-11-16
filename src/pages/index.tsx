@@ -6,7 +6,7 @@ import { isXurActive } from "../core/Lib/CacheManager";
 
 export async function getStaticProps({ locale })
 {
-    const xur = await isXurActive();
+    console.log(`> Constructing [ Index.tsx ] in "${locale}" location`);
     const vendors = await getVendors();
 
     return {

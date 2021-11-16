@@ -105,7 +105,6 @@ export async function fetchVendorsSales(hashes: string[])
 export async function isXurActive(): Promise<XurLocationProps>
 {
     const now = new Date();
-    console.log(`Day: ${now.getUTCDay()} || Hour: ${now.getUTCHours()}`);
 
     if (now.getUTCDay() > 2 && now.getUTCDay() < 5) return undefined; // After Tue and before fry
     if (now.getUTCDay() === 2 && now.getUTCHours() > 17) return undefined; // Is Tue, but after reset
@@ -153,9 +152,9 @@ async function createVendor(params: VendorParams): Promise<Vendor>
     vendor.setIcons(icon, large_icon, map_icon);
 
     // Set Vendor's location
-    const xur_location = await isXurActive();
-    if ((vendor instanceof XurVendor) && xur_location)
+    if ((vendor instanceof XurVendor))
     {
+        const xur_location = await isXurActive();
         const { x_location_initials, x_destination, x_bubble } = xur_location;
         bubble = x_bubble;
         destination = x_destination;

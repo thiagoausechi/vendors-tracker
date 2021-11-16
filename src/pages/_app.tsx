@@ -3,6 +3,9 @@ import '../styles/globals.css'
 
 function MyApp({ Component, pageProps })
 {
+  console.log("Starting building ==================================================");
+  console.log(pageProps);
+
   return <Component {...pageProps} />
 }
 
