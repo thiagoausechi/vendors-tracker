@@ -50,6 +50,13 @@ export default async function handler(req, res)
                             return;
                         }
                     }
+                    else
+                    {
+                        console.error("> No cached data founded (maybe blank?). Calling rebuild.");
+                        await requestRebuild();
+                        res.status(200).json({});
+                        return;
+                    }
                 }
                 else console.log("Xûr not arrived yet. Skipped action.");
 
